@@ -2,6 +2,7 @@ from board import create_board, make_move, valid_moves, opponent, count_pieces
 from random_ai import RandomAgent
 from greedy_ai import GreedyAgent
 from minimax_ai import MinimaxAgent
+from mcts_ai import MCTSAgent
 
 def play_game(agent_black, agent_white, verbose=False):
     board = create_board()
@@ -36,14 +37,14 @@ def play_game(agent_black, agent_white, verbose=False):
         print(f"Score final - Noir (B): {black_score}, Blanc (W): {white_score}")
     return black_score, white_score
 
-def tournament(n_games=100):
+def tournament(n_games=10):
     black_wins = 0
     white_wins = 0
     draws = 0
 
     for i in range(n_games):
-        black = MinimaxAgent("B", depth=4)
-        white = GreedyAgent("W")
+        black = GreedyAgent("B")
+        white = MCTSAgent("W", simulations=500)
         b_score, w_score = play_game(black, white)
 
         if b_score > w_score:
@@ -54,9 +55,9 @@ def tournament(n_games=100):
             draws += 1
 
     print(f"Sur {n_games} parties :")
-    print(f"greedy (Noir) gagne {black_wins} fois")
-    print(f"Minimax (Blanc) gagne {white_wins} fois")
+    print(f"Greedy (Noir) gagne {black_wins} fois")
+    print(f"MCTS (Blanc) gagne {white_wins} fois")
     print(f"Égalités : {draws}")
 
 if __name__ == "__main__":
-    tournament(n_games=5)
+    tournament(n_games=10)
